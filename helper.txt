@@ -1,0 +1,23 @@
+LAPD:
+
+CHICAGO:
+
+CHICAGO HATTEEEEEE
+
+
+
+RD no	Date	IUCR code	Offense	Motivation	CPD Area	District	Community	Disposition	
+
+
+
+NYPD:
+NYPD-HATE CRIMES.csv
+Full Complaint ID,Complaint Year Number,Month Number,Record Create Date,Complaint Precinct Code,Patrol Borough Name,County,Law Code Category Description,Offense Description,PD Code Description,Bias Motive Description,Offense Category,Arrest Date,Arrest Id
+
+
+
+WASHINGTOM:
+https://mpdc.dc.gov/node/1334781
+
+HATE CRIMES OPEN DATA 12
+Date of Offense,Time of Offense,Date Offense Reported,Report Year,Month,CCN,District,Block Location,Type of Hate Bias,Targeted Group ,Top Offense Type
