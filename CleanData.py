@@ -60,6 +60,22 @@ liboffenses = {
     "Burglary/Breaking & Entering":"Attacks against property",
 }
 
+libpopulation_eua = {
+     
+"0":"Alaska",
+"2":"Alabama","3":"Arkansas","4":"Arizona","7":"California","10":"Colorado","33":"North Dakota","32":"North Carolina","11":"Connecticut",
+"12":"District of Columbia","13":"Delaware","14":"Florida","15":"Georgia","16":"Hawaii","17":"Iowa","18":"Idaho","19":"Illinois","20":"Indiana","21":"Kansas",
+"22":"Kentucky","23":"Louisiana","24":"Massachusetts","25":"Maryland","26":"Maine","27":"Michingan","28":"Minnesota","29":"Missouri","30":"Mississippi",
+"31":"Montana","34":"Nebraska","35":"New Hampshire","36":"New Jersey","37":"New Mexico","38":"Nevada","39":"New York","40":"Ohio","41":"Oklahoma",
+"42":"Oregon","43":"Pennsylvania","44":"Rhode Island","45":"South Carolina", "46":"South Dakota", "47":"Tennessee", "48":"Texas","49":"Utah","50":"Virginia",
+"51":"Vermont","52":"Washington","53":"Wisconsin","54":"West Virginia",
+ "55":"Wyoming"
+}
+
+
+libgdp = {
+    "AKPCPI":"Alaska", "ALPCPI":"Alabama","ARPCPI":"Arkansas","AZPCPI":"Arizona","CAPCPI":"California","COPCPI":"Colorado","CTPCPI":"Connecticut","DCPCPI":"District of Columbia","DEPCPI":"Delaware","FLPCPI":"Florida","GAPCPI":"Georgia","HIPCPI":"Hawaii","IAPCPI":"Iowa","IDPCPI":"Idaho","ILPCPI":"Illinois","INPCPI":"Indiana","KSPCPI":"Kansas","KYPCPI":"Kentucky","LAPCPI":"Louisiana","MAPCPI":"Massachusetts","MDPCPI":"Maryland","MEPCPI":"Maine","MIPCPI":"Michingan","MNPCPI":"Minnesota","MOPCPI":"Missouri","MSPCPI":"Mississippi","MTPCPI":"Montana","NCPCPI":"North Carolina","NDPCPI":"North Dakota","NEPCPI":"Nebraska","NHPCPI":"New Hampshire","NJPCPI":"New Jersey","NMPCPI":"New Mexico","NVPCPI":"Nevada","NYPCPI":"New York","OHPCPI":"Ohio","OKPCPI":"Oklahoma","ORPCPI":"Oregon","PAPCPI":"Pennsylvania","RIPCPI":"Rhode Island","SCPCPI":"South Carolina","SDPCPI":"South Dakota","TNPCPI":"Tennessee","TXPCPI":"Texas","UTPCPI":"Utah","VAPCPI":"Virginia","VTPCPI":"Vermont","WAPCPI":"Washington","WIPCPI":"Wisconsin","WVPCPI":"West Virginia","WYPOP_20081219":"Wyoming"
+}
 
 def EUA():
 
@@ -195,7 +211,155 @@ def Clean():
                     count+=1
 
 
+
+
+def cleanPopulation():
+    FileNameAreaEurope = "DataSet/PopulationDataSets/totalareaEurope.csv"
+    FileNameClean = "OriginalDataSet/population.csv"
+    FileName = "DataSet/PopulationDataSets/populationEUA.csv"
+    FileNameEurope = "DataSet/PopulationDataSets/populationEurope.csv"
+    FileNameEuropeGDP = "DataSet/gdpEurope.csv"
+    FileNameEUAGDP = "DataSet/gdpEua.csv"
+    count = 0
+    helper = {}
+    helperEurope = {}
+    areaEUA = {}
+    gdpEurope = {}
+    helperGdp = {}
+    with open(FileName, 'r') as f:
+        for linha in f:
+            if count > 0:
+                reader = csv.reader([linha], delimiter='	', quotechar='"')
+                dados_completos = next(reader)
+                
+                for num in range(len(dados_completos)+1):
+                    value = num 
+                    if str(value) in libpopulation_eua.keys():
+                        if libpopulation_eua[str(value)] in helper.keys():
+                            
+                            helper[libpopulation_eua[str(value)]].append(dados_completos[num+1].replace(".", ""))
+                        else:
+                            helper[libpopulation_eua[str(value)]] = [dados_completos[num+1].replace(".", "")]
+                                
+            else:
+                reader = csv.reader([linha], delimiter='	', quotechar='"')
+                dados_completos = next(reader)
+               
+                count+=1
+    count = 0    
+    with open(FileNameEurope, 'r') as f:
+        for linha in f:
+            if count > 0:
+                reader = csv.reader([linha], delimiter=',', quotechar='"')
+                dados_completos = next(reader)
+                if dados_completos[2] != 'World' and dados_completos[2] != 'Gambia, The':
+                    helperEurope[dados_completos[2]] = [dados_completos[8],dados_completos[9],dados_completos[10],dados_completos[11],dados_completos[12],dados_completos[13],dados_completos[14]]
+            else:
+               
+                count+=1
+
+
+
+    FileNameAreaUSA = "DataSet/PopulationDataSets/totalareaEUA.csv"
+    count = 0
+    with open(FileNameAreaUSA,"r") as f:
+        for linha in f:
+            reader = csv.reader([linha], delimiter='	', quotechar='"')
+            dados_completos = next(reader)
+ 
+            if count >= 1:
+                area = dados_completos[3].replace(",", "")
+              
+                local = dados_completos[0].strip()
+               
+                areaEUA[local] = area
+              
+            count+=1
+   
+
+    areaEurope = {}
+    with open(FileNameAreaEurope,"r") as f:
+        for linha in f:
+            reader = csv.reader([linha], delimiter=',', quotechar='"')
+            dados_completos = next(reader)
+            
+            areaEurope[dados_completos[0].strip()] = dados_completos[2].strip()
+    
+    with open(FileNameEuropeGDP,"r") as f:
+        for linha in f:
+            reader = csv.reader([linha], delimiter=',', quotechar='"')
+            dados_completos = next(reader)
+
+            gdpEurope[dados_completos[0]] = dados_completos[-9:-2]
+    gpdhelper = {}
+    count = 0
+    gpdfinal = {}
+    with open(FileNameEUAGDP, 'r') as f:
+        for linha in f:
+            if count > 0:
+                reader = csv.reader([linha], delimiter='	', quotechar='"')
+                dados_completos = next(reader)
+                
+                for chaves,values in gpdhelper.items():
+                    if values not in gpdfinal:
+                        gpdfinal[values] = [str(dados_completos[chaves])]  # Initialize with a list containing the first value
+                    else:
+                        gpdfinal[values].append(str(dados_completos[chaves]))
+            else:
+                reader = csv.reader([linha], delimiter='	', quotechar='"')
+                dados_completos = next(reader)
+         
+                for num in range(1,len(dados_completos)):
+                    if libgdp.get(dados_completos[num]) != None:
+                        gpdhelper[num] =libgdp.get(dados_completos[num])
+                count+=1
+
+    with open(FileNameClean, 'w') as FW:
+        out = "EUAvsEUROPE,state_name,pop2016,pop2017,pop2018,pop2019,pop2020,pop2021,pop2022,totalarea,gdp2016,gdp2017,gdp2018,gdp2019,gdp2020,gdp2021,gdp2022\n"
+        FW.write(out)
+        for chave, valor in helper.items():
+            out = "United States of America" + "," + chave 
+            for val in valor:
+                out += "," + val 
+            
+           
+            out += "," + str(areaEUA.get(chave)) 
+
+            lista = gpdfinal[chave]
+            for num in lista:
+                out += "," + num
+            out += "\n"
+            
+            FW.write(out)
+        
+        for chave, valor in helperEurope.items():
+            out = "Europe" + "," + chave 
+            for val in valor:
+                out += "," + val 
+            out += "," + str(areaEurope.get(chave))
+           
+            lista = gdpEurope[chave]
+            for num in lista:
+                out += "," + num
+            out += "\n"
+            FW.write(out)
+
+
+def cleanPopulationArea():
+    FileName = "DataSet/PopulationDataSets/totalareaEurope.csv"
+    areaEurope = {}
+    with open(FileName,"r") as f:
+        for linha in f:
+            reader = csv.reader([linha], delimiter=',', quotechar='"')
+            dados_completos = next(reader)
+            
+           
+            areaEurope[dados_completos[0].strip()] = dados_completos[2].strip()
+    print(areaEurope)
+          
+                
+            
 if __name__ == "__main__":
  # Texto de exemplo
-    Europe()
+    cleanPopulation()
     #EUA()
