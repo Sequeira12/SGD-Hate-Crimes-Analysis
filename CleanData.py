@@ -314,33 +314,159 @@ def cleanPopulation():
                         gpdhelper[num] =libgdp.get(dados_completos[num])
                 count+=1
 
+    FileName = "DataSet/MeanAgesDataSets/europeages.csv"
+    agesEurope = {}
+    with open(FileName,"r") as f:
+         for linha in f:
+            reader = csv.reader([linha], delimiter=',', quotechar='"')
+            dados_completos = next(reader)
+            values = dados_completos[0]
+            if values not in agesEurope:
+                
+                age = dados_completos[4].replace(",", ".")
+                agesEurope[values] = [str(age)]  # Initialize with a list containing the first value
+            else:
+                age = dados_completos[4].replace(",", ".")
+                agesEurope[values].append(str(age))
+            
+   
+
+    FileName = "DataSet/MeanAgesDataSets/EUA/2016.csv"
+    positionStates = {}
+    NotDone = True
+    agesEUA = {}
+    lines = [33,35,35,35,35,35,35]
+    col = [3,6,6,6,6,6,6,6]
+    for i in range(7):
+        file = 2016 + i
+        FileName = "DataSet/MeanAgesDataSets/EUA/"+str(file)+".csv"
+      
+        with open(FileName,"r") as f:
+            n_linha = 0
+            for linha in f:
+                reader = csv.reader([linha], delimiter=',', quotechar='"')
+                dados_completos = next(reader)
+                
+                if NotDone:
+                    
+                    for val in range(1,len(dados_completos),col[i]):
+                 
+                        state = dados_completos[val].split("!!")
+                        name = state[0]
+                        positionStates[name] = val
+                     
+                    NotDone = False
+                              
+                if n_linha == lines[i]:
+                   
+                    for chaves, values in positionStates.items():
+                        if chaves not in agesEUA:
+                            agesEUA[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                        else:
+                            agesEUA[chaves].append(str(dados_completos[values]))
+                n_linha += 1
+            NotDone = True
+        
+    FileName = "DataSet/ForeignBornDataSets/europe.csv"
+
+    countryForeign = {}
+    with open(FileName,"r") as f:
+        for linha in f:
+            reader = csv.reader([linha], delimiter=',', quotechar=',')
+            dados_completos = next(reader)
+          
+            countryForeign[dados_completos[0]] = dados_completos[1:]
+    
+    
+    lines = [115,115,115,116,116,117,117]
+    col = [2,2,2,2,2,2,2]
+    positionstates = {}
+    stateforeign = {}
+    NotDone = True
+    for i in range(7):
+        file = 2016 + i
+        FileName = "DataSet/ForeignBornDataSets/"+str(file)+".csv"
+        
+        with open(FileName,"r") as f:
+            n_linha = 0
+            for linha in f:
+                reader = csv.reader([linha], delimiter=',', quotechar='"')
+                dados_completos = next(reader)
+                
+                if NotDone:
+                    count = 0
+                    for val in range(1,len(dados_completos),col[i]):
+                    # print(dados_completos[i])
+                        state = dados_completos[val].split("!!")
+                        name = state[0]
+                        positionstates[name] = val
+                        count += 1
+                    NotDone = False
+                              
+                if n_linha == lines[i]:
+          
+                    for chaves, values in positionstates.items():
+                        if chaves not in stateforeign:
+                            stateforeign[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                        else:
+                            stateforeign[chaves].append(str(dados_completos[values]))
+                n_linha += 1
+            NotDone = True
+
     with open(FileNameClean, 'w') as FW:
-        out = "EUAvsEUROPE,state_name,pop2016,pop2017,pop2018,pop2019,pop2020,pop2021,pop2022,totalarea,gdp2016,gdp2017,gdp2018,gdp2019,gdp2020,gdp2021,gdp2022\n"
+        out = "EUAvsEUROPE,state_name,pop2016,pop2017,pop2018,pop2019,pop2020,pop2021,pop2022,totalarea,gdp2016,gdp2017,gdp2018,gdp2019,gdp2020,gdp2021,gdp2022,age2016,age2017,age2018,age2019,age2020,age2021,age2022,percentageForeign2016,percentageForeign2017,percentageForeign2018,percentageForeign2019,percentageForeign2020,percentageForeign2021,percentageForeign2022\n"
         FW.write(out)
         for chave, valor in helper.items():
             out = "United States of America" + "," + chave 
             for val in valor:
                 out += "," + val 
-            
+           
            
             out += "," + str(areaEUA.get(chave)) 
 
             lista = gpdfinal[chave]
             for num in lista:
+                num = num.replace(",",".")
                 out += "," + num
-            out += "\n"
+           
             
-            FW.write(out)
+            ageslist = agesEUA[chave]
+            
+        
+            for ageyear in ageslist:
+                ageyear = ageyear.replace(",",".")
+                out += "," + ageyear
+            
+            foreign = stateforeign[chave]
+            
+            pop_index = 0
+            for forei in foreign:
+                forei = forei.replace(",","")
+                out += "," + str(round(int(forei)/int(valor[pop_index]),3))
+                pop_index += 1
+            out += "\n"
+            FW.write(out)   
         
         for chave, valor in helperEurope.items():
             out = "Europe" + "," + chave 
             for val in valor:
                 out += "," + val 
             out += "," + str(areaEurope.get(chave))
+
            
             lista = gdpEurope[chave]
             for num in lista:
                 out += "," + num
+
+            ageslist = agesEurope[chave]
+            for ageyear in ageslist:
+                out += "," + ageyear
+
+            country = countryForeign[chave]
+            
+          
+            for yea in country:
+                out += "," + str(round((float(yea) / 100),3))
             out += "\n"
             FW.write(out)
 
@@ -355,11 +481,115 @@ def cleanPopulationArea():
             
            
             areaEurope[dados_completos[0].strip()] = dados_completos[2].strip()
-    print(areaEurope)
-          
+    
+
+
+
+def cleanAges():
+    FileName = "DataSet/MeanAgesDataSets/europeages.csv"
+    agesEurope = {}
+    with open(FileName,"r") as f:
+         for linha in f:
+            reader = csv.reader([linha], delimiter=',', quotechar='"')
+            dados_completos = next(reader)
+            values = dados_completos[0]
+            if values not in agesEurope:
+                agesEurope[values] = [str(dados_completos[4])]  # Initialize with a list containing the first value
+            else:
+                agesEurope[values].append(str(dados_completos[4]))
+            
+   # print(agesEurope.get('France'))
+
+    FileName = "DataSet/MeanAgesDataSets/EUA/2016.csv"
+    positionStates = {}
+    NotDone = True
+    agesEUA = {}
+    lines = [33,35,35,35,35,35,35]
+    col = [3,6,6,6,6,6,6,6]
+    for i in range(7):
+        file = 2016 + i
+        FileName = "DataSet/MeanAgesDataSets/EUA/"+str(file)+".csv"
+        print(FileName)
+        with open(FileName,"r") as f:
+            n_linha = 0
+            for linha in f:
+                reader = csv.reader([linha], delimiter=',', quotechar='"')
+                dados_completos = next(reader)
                 
+                if NotDone:
+                    count = 0
+                    for val in range(1,len(dados_completos),col[i]):
+                    # print(dados_completos[i])
+                        state = dados_completos[val].split("!!")
+                        name = state[0]
+                        positionStates[name] = val
+                        count += 1
+                    NotDone = False
+                              
+                if n_linha == lines[i]:
+                    print(dados_completos)
+                    for chaves, values in positionStates.items():
+                        if chaves not in agesEUA:
+                            agesEUA[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                        else:
+                            agesEUA[chaves].append(str(dados_completos[values]))
+                n_linha += 1
+            NotDone = True
+
+
+def CleanForeign():
+    FileName = "DataSet/ForeignBornDataSets/europe.csv"
+
+    countryForeign = {}
+    with open(FileName,"r") as f:
+        for linha in f:
+            reader = csv.reader([linha], delimiter=',', quotechar=',')
+            dados_completos = next(reader)
+          
+            countryForeign[dados_completos[0]] = dados_completos[1:]
+    
+    
+    lines = [115,115,115,116,116,117,117]
+    col = [2,2,2,2,2,2,2]
+    positionstates = {}
+    stateforeign = {}
+    NotDone = True
+    for i in range(7):
+        file = 2016 + i
+        FileName = "DataSet/ForeignBornDataSets/"+str(file)+".csv"
+        
+        with open(FileName,"r") as f:
+            n_linha = 0
+            for linha in f:
+                reader = csv.reader([linha], delimiter=',', quotechar='"')
+                dados_completos = next(reader)
+                
+                if NotDone:
+                    count = 0
+                    for val in range(1,len(dados_completos),col[i]):
+                    # print(dados_completos[i])
+                        state = dados_completos[val].split("!!")
+                        name = state[0]
+                        positionstates[name] = val
+                        count += 1
+                    NotDone = False
+                              
+                if n_linha == lines[i]:
+          
+                    for chaves, values in positionstates.items():
+                        if chaves not in stateforeign:
+                            stateforeign[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                        else:
+                            stateforeign[chaves].append(str(dados_completos[values]))
+                n_linha += 1
+            NotDone = True
+        print(stateforeign)
+          
+        
+
+    
             
 if __name__ == "__main__":
- # Texto de exemplo
+ # Texto de exemplo    
     cleanPopulation()
     #EUA()
