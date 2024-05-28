@@ -302,7 +302,7 @@ def cleanPopulation():
                 
                 for chaves,values in gpdhelper.items():
                     if values not in gpdfinal:
-                        gpdfinal[values] = [str(dados_completos[chaves])]  # Initialize with a list containing the first value
+                        gpdfinal[values] = [str(dados_completos[chaves])] 
                     else:
                         gpdfinal[values].append(str(dados_completos[chaves]))
             else:
@@ -324,7 +324,7 @@ def cleanPopulation():
             if values not in agesEurope:
                 
                 age = dados_completos[4].replace(",", ".")
-                agesEurope[values] = [str(age)]  # Initialize with a list containing the first value
+                agesEurope[values] = [str(age)]
             else:
                 age = dados_completos[4].replace(",", ".")
                 agesEurope[values].append(str(age))
@@ -361,7 +361,7 @@ def cleanPopulation():
                    
                     for chaves, values in positionStates.items():
                         if chaves not in agesEUA:
-                            agesEUA[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                            agesEUA[chaves] = [str(dados_completos[values])]
                         else:
                             agesEUA[chaves].append(str(dados_completos[values]))
                 n_linha += 1
@@ -396,7 +396,7 @@ def cleanPopulation():
                 if NotDone:
                     count = 0
                     for val in range(1,len(dados_completos),col[i]):
-                    # print(dados_completos[i])
+                  
                         state = dados_completos[val].split("!!")
                         name = state[0]
                         positionstates[name] = val
@@ -407,7 +407,7 @@ def cleanPopulation():
           
                     for chaves, values in positionstates.items():
                         if chaves not in stateforeign:
-                            stateforeign[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                            stateforeign[chaves] = [str(dados_completos[values])] 
                         else:
                             stateforeign[chaves].append(str(dados_completos[values]))
                 n_linha += 1
@@ -494,11 +494,11 @@ def cleanAges():
             dados_completos = next(reader)
             values = dados_completos[0]
             if values not in agesEurope:
-                agesEurope[values] = [str(dados_completos[4])]  # Initialize with a list containing the first value
+                agesEurope[values] = [str(dados_completos[4])] 
             else:
                 agesEurope[values].append(str(dados_completos[4]))
             
-   # print(agesEurope.get('France'))
+   
 
     FileName = "DataSet/MeanAgesDataSets/EUA/2016.csv"
     positionStates = {}
@@ -519,7 +519,7 @@ def cleanAges():
                 if NotDone:
                     count = 0
                     for val in range(1,len(dados_completos),col[i]):
-                    # print(dados_completos[i])
+                 
                         state = dados_completos[val].split("!!")
                         name = state[0]
                         positionStates[name] = val
@@ -530,7 +530,7 @@ def cleanAges():
                     print(dados_completos)
                     for chaves, values in positionStates.items():
                         if chaves not in agesEUA:
-                            agesEUA[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                            agesEUA[chaves] = [str(dados_completos[values])] 
                         else:
                             agesEUA[chaves].append(str(dados_completos[values]))
                 n_linha += 1
@@ -567,7 +567,7 @@ def CleanForeign():
                 if NotDone:
                     count = 0
                     for val in range(1,len(dados_completos),col[i]):
-                    # print(dados_completos[i])
+                   
                         state = dados_completos[val].split("!!")
                         name = state[0]
                         positionstates[name] = val
@@ -578,7 +578,7 @@ def CleanForeign():
           
                     for chaves, values in positionstates.items():
                         if chaves not in stateforeign:
-                            stateforeign[chaves] = [str(dados_completos[values])]  # Initialize with a list containing the first value
+                            stateforeign[chaves] = [str(dados_completos[values])] 
                         else:
                             stateforeign[chaves].append(str(dados_completos[values]))
                 n_linha += 1
@@ -590,6 +590,5 @@ def CleanForeign():
     
             
 if __name__ == "__main__":
- # Texto de exemplo    
     cleanPopulation()
-    #EUA()
+    
